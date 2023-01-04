@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "verus"
+  site-url: "https://getdatachimp.github.io/verus"
+  description: "runs your ML pipeline code on your infrastructure"
+  repo-branch: main
+  repo-url: "https://github.com/getdatachimp/verus"
