@@ -4,6 +4,7 @@
 __all__ = ['SOURCE_ROOT', 'Task', 'activate']
 
 # %% ../nbs/00_core.ipynb 3
+import argparse
 import textwrap
 import json
 import requests
@@ -42,12 +43,12 @@ dchimp.on_cell_execute('''{task_source}''', '{json.dumps(automations)}', globals
 def _update_task_status(host, task, status):
     requests.post(
         f"{host}/updateTask/{task['job_run_id']}",
-        data={
+        json={
             'task_name': task['name'],
             'status': status
         },
         headers={'x-token': os.environ.get('CHIMP_TOKEN')}
-    )
+    ).raise_for_status()
 
 
 class Task(typing.TypedDict):
@@ -114,7 +115,7 @@ def _execute():
         command="/bin/bash",
         detach=True
     )
-    print("container run")
+    print("container started")
     # TODO: We'll need to copy more than just the module that has the workflow
     # because the workflow could reference functions defined in other files.
     # We'll probably have to pass the whole codebase. Would be nice if this was
@@ -134,14 +135,14 @@ def _execute():
     container.exec_run(
         "cp data_chimp/source/data_chimp_notebook.ipynb data_chimp/source/data_chimp_notebook_writable.ipynb"
     )
-
+    print("source copied to container")
     # TODO: Run this function as a subprocess every few seconds so the orchestrator knows the build is still
     # progressing
     _update_task_status(host, task, 'executing')
     container.exec_run(
         'jupyter nbconvert --inplace --allow-errors --execute data_chimp/source/data_chimp_notebook_writable.ipynb'
     )
-
+    print("finished task, sending results to data chimp")
     # Collect notebook results and post to orchestration server
     _bytes, _ = container.get_archive(
         '/home/jovyan/data_chimp/source/data_chimp_notebook_writable.ipynb'
@@ -163,13 +164,14 @@ def _execute():
         )
     container.stop()
     container.remove()
+    print("task container stopped and removed")
 
 
 def _run_every(func, sec=5):
     s = sched.scheduler(time.time, time.sleep)
 
     def do_something(sc):
-        print("Doing stuff...")
+        print("Polling for available jobs")
         func()
         sc.enter(sec, 1, do_something, (sc,))
 
@@ -179,4 +181,3 @@ def _run_every(func, sec=5):
 # %% ../nbs/00_core.ipynb 12
 def activate():
     _run_every(_execute, 5)
-
