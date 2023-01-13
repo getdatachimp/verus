@@ -180,7 +180,3 @@ def _run_every(func, sec=5):
 def activate():
     _run_every(_execute, 5)
 
-
-# %% ../nbs/00_core.ipynb 13
-if __name__ == "__main__":
-    activate()
