@@ -39,8 +39,6 @@ dchimp.on_cell_execute('''{task_source}''', '{json.dumps(automations)}', globals
   """
 
 # %% ../nbs/00_core.ipynb 7
-
-
 def _update_task_status(host, task, status):
     requests.post(
         f"{host}/updateTask/{task['job_run_id']}",
@@ -72,8 +70,6 @@ def _get_source(task: Task, root=SOURCE_ROOT):
     return inspect.getsource(getattr(workflow_module, task['name']))
 
 # %% ../nbs/00_core.ipynb 9
-
-
 def _get_automations(path: str, root=SOURCE_ROOT) -> list:
     node = jupytext.read(f"{root}/{path}")
     return [
@@ -83,8 +79,6 @@ def _get_automations(path: str, root=SOURCE_ROOT) -> list:
     ]
 
 # %% ../nbs/00_core.ipynb 11
-
-
 def _execute():
     host = os.environ.get("ORCHESTRATION_SERVER", "https://the.datachimp.app")
     r = requests.get(f"{host}/getTasks",
@@ -183,8 +177,6 @@ def _run_every(func, sec=5):
     s.run()
 
 # %% ../nbs/00_core.ipynb 12
-
-
 def activate():
     _run_every(_execute, 5)
 
