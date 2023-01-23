@@ -68,7 +68,8 @@ def _get_source(task: Task, root=SOURCE_ROOT):
         "workflow", f"{root}/{task['code_nb_path']}")
     workflow_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(workflow_module)
-    return inspect.getsource(getattr(workflow_module, task['name']))
+    # getattr returns a DunderFunc
+    return inspect.getsource(getattr(workflow_module, task['name']).func)
 
 # %% ../nbs/00_core.ipynb 9
 def _get_automations(path: str, root=SOURCE_ROOT) -> list:
@@ -87,8 +88,10 @@ def _execute():
     r.raise_for_status()
     tasks: typing.List[Task] = r.json()
     if len(tasks['data']) == 0:
+        print("no tasks. Trying again later...")
         return
     task, *_ = tasks['data']
+    print(f"received task: {task}")
     _update_task_status(host, task, 'started')
     client = docker.from_env()
     print("initiated docker client")
