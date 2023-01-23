@@ -154,17 +154,26 @@ def _execute():
         f.extractall(path="output")
     with open('output/data_chimp_notebook_writable.ipynb') as f:
         nb = json.load(f)
-        requests.post(
+        r = requests.post(
             f"{host}/updateTask/{task['job_run_id']}",
-            data={
+            json={
                 'task_name': task['name'],
                 'status': 'done',
                 'nb': nb
+            },
+            headers={
+                'x-token': os.environ.get('CHIMP_TOKEN')
             }
         )
-    container.stop()
-    container.remove()
-    print("task container stopped and removed")
+        try: 
+            r.raise_for_status()
+        except Exception as e:
+            print("failed to update task status because of error:")
+            print(e)
+        finally:
+            container.stop()
+            container.remove()
+            print("task container stopped and removed")
 
 
 def _run_every(func, sec=5):
