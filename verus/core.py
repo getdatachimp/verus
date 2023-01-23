@@ -36,8 +36,9 @@ import {wf_name}
 
 # %%
 from data_chimp_executor import execute as dchimp
-dchimp.on_cell_execute('''{task_source}''', '{json.dumps(automations)}', globals() | json.loads('{json.dumps(input)}'))
-  """
+import json
+dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', '{json.dumps(automations)}', globals() | json.loads('{json.dumps(input)}'))
+"""
 
 # %% ../nbs/00_core.ipynb 7
 def _update_task_status(host, task, status):
@@ -134,10 +135,15 @@ def _execute():
     container.exec_run("mkdir -p data_chimp/source")
     with open('code.tar') as tar_f:
         container.put_archive('/home/jovyan/data_chimp/source', tar_f)
-    _update_task_status(host, task, 'env_ready')
     container.exec_run(
         "cp data_chimp/source/data_chimp_notebook.ipynb data_chimp/source/data_chimp_notebook_writable.ipynb"
     )
+    container.exec_run(
+        "wget https://github.com/getdatachimp/verus/raw/main/data_chimp_executor-0.1.0-py2.py3-none-any.whl",
+        stream=True
+    )
+    container.exec_run('pip install data_chimp_executor-0.1.0-py2.py3-none-any.whl')
+    _update_task_status(host, task, 'env_ready')
     print("source copied to container")
     # TODO: Run this function as a subprocess every few seconds so the orchestrator knows the build is still
     # progressing
@@ -175,7 +181,8 @@ def _execute():
             print(e)
         finally:
             container.stop()
-            container.remove()
+            if not os.environ.get('DC_DEBUG'):
+                container.remove()
             print("task container stopped and removed")
 
 
