@@ -57,7 +57,6 @@ def get_imports_source(path):
 def _input_value_to_arg_value(value):
     return f"'value'" if isinstance(value, str) else value
 
-
 def _task_to_script(task, automations, root):
     task_source = _get_source(task, root)
     imports_source = get_imports_source(f"{root}/{task['code_nb_path']}")
@@ -66,11 +65,11 @@ def _task_to_script(task, automations, root):
 {imports_source}
 import {task['wf_name']}
 
-{task['wf_name']}.{task['name']}({", ".join([f"{key}={_input_value_to_arg_value(value)}" for key, value in task['inputs'].items()])})
+{task['wf_name']}.{task['name']}({", ".join([f"{key}={_input_value_to_arg_value(value)}" for key, value in task['input'].items()])})
 
 # %%
 import json
-dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', '{json.dumps(automations)}', globals() | json.loads('{json.dumps(task['inputs'])}'))
+dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', '{json.dumps(automations)}', globals() | json.loads('{json.dumps(task['input'])}'))
 """
 
 # %% ../nbs/00_core.ipynb 11
@@ -83,9 +82,6 @@ def _update_task_status(host, task, status):
         },
         headers={'x-token': os.environ.get('CHIMP_TOKEN')}
     ).raise_for_status()
-
-
-
 
 # %% ../nbs/00_core.ipynb 12
 def _get_automations(path: str, root=SOURCE_ROOT) -> list:
