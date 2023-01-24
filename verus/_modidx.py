@@ -13,4 +13,5 @@ d = { 'settings': { 'branch': 'main',
                             'verus.core._run_every': ('core.html#_run_every', 'verus/core.py'),
                             'verus.core._task_to_script': ('core.html#_task_to_script', 'verus/core.py'),
                             'verus.core._update_task_status': ('core.html#_update_task_status', 'verus/core.py'),
-                            'verus.core.activate': ('core.html#activate', 'verus/core.py')}}}
+                            'verus.core.activate': ('core.html#activate', 'verus/core.py'),
+                            'verus.core.get_imports_source': ('core.html#get_imports_source', 'verus/core.py')}}}
