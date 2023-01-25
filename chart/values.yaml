@@ -11,7 +11,7 @@ image:
   tag: "latest"
 
 workflowRepo: https://github.com/getdatachimp/verus
-chimpToken: clcgq54bu00018gnf4me34vhv
+chimpToken: cl4xep33t000109jnpnc1b6kk
 
 imagePullSecrets: []
 nameOverride: ""
