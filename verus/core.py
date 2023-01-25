@@ -150,7 +150,7 @@ def _execute():
         tarfile.open('code.tar', mode='w') as tar_f,
     ):
         tar_f.add(
-            f"{os.environ.get('SOURCE_ROOT', SOURCE_ROOT)}/{task['code_nb_path']}",
+            f"{os.environ.get('SOURCE_ROOT', root)}/{task['code_nb_path']}",
             f"{task['wf_name']}.py"
         )
         tar_f.add("data_chimp_notebook.ipynb")
