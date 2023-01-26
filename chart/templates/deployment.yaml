@@ -38,20 +38,41 @@ spec:
               value: {{ .Values.chimpToken }}
             - name: WORKFLOW_REPO
               value: {{ .Values.workflowRepo }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            - name: DOCKER_HOST
+              value: tcp://localhost:2376
+            - name: DOCKER_TLS_VERIFY
+              value: "1"
+            - name: DOCKER_TLS_CERTDIR
+              value: /certs
+            - name: DOCKER_CERT_PATH
+              value: /certs/client
+          volumeMounts:
+            - name: certs-client
+              mountPath: /certs/client
+              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        - name: dind-daemon
+          image: docker:20.10.23-dind
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: /certs
+          securityContext: 
+            privileged: true 
+          volumeMounts: 
+            - name: docker-graph-storage 
+              mountPath: /var/lib/docker 
+            - name: certs-ca
+              mountPath: /certs/ca
+            - name: certs-client
+              mountPath: /certs/client
+      volumes: 
+      - name: docker-graph-storage 
+        emptyDir: {}
+      - name: certs-ca
+        emptyDir: {}
+      - name: certs-client
+        emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
