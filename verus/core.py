@@ -155,17 +155,23 @@ def _execute():
             f"{task['wf_name']}.py"
         )
         tar_f.add("data_chimp_notebook.ipynb")
-    container.exec_run("mkdir -p data_chimp/source")
+    _, output = container.exec_run("mkdir -p data_chimp/source", stream=True)
+    for chunk in output:
+        print(chunk)
     with open('code.tar') as tar_f:
         container.put_archive('/home/jovyan/data_chimp/source', tar_f)
     container.exec_run(
         "cp data_chimp/source/data_chimp_notebook.ipynb data_chimp/source/data_chimp_notebook_writable.ipynb"
     )
-    container.exec_run(
+    _, output = container.exec_run(
         "wget https://github.com/getdatachimp/verus/raw/main/data_chimp_executor-0.1.0-py2.py3-none-any.whl",
         stream=True
     )
-    container.exec_run('pip install data_chimp_executor-0.1.0-py2.py3-none-any.whl')
+    for chunk in output:
+        print(chunk) 
+    _, output = container.exec_run('pip install data_chimp_executor-0.1.0-py2.py3-none-any.whl', stream=True)
+    for chunk in output:
+        print(chunk) 
     _update_task_status(host, task, 'env_ready')
     print("source copied to container")
     # TODO: Run this function as a subprocess every few seconds so the orchestrator knows the build is still
