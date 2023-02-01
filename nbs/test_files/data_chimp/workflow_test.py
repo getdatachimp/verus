@@ -1,0 +1,35 @@
+import workflow
+
+
+def test_wtf_bro(snapshot):
+    snapshot.assert_match(repr(workflow.wtf_bro()), 'wtf_bro_output.txt')
+def test_task_three(snapshot):
+    snapshot.assert_match(repr(workflow.task_three()), 'task_three_output.txt')
+def test_six(snapshot):
+    snapshot.assert_match(repr(workflow.six()), 'six_output.txt')
+def test_d(snapshot):
+    snapshot.assert_match(repr(workflow.d()), 'd_output.txt')
+def test_task_one(snapshot):
+    snapshot.assert_match(repr(workflow.task_one()), 'task_one_output.txt')
+def test_task_two(snapshot):
+    snapshot.assert_match(repr(workflow.task_two()), 'task_two_output.txt')
+def test_task_three(snapshot):
+    snapshot.assert_match(repr(workflow.task_three()), 'task_three_output.txt')
+def test_task_one(snapshot):
+    snapshot.assert_match(repr(workflow.task_one()), 'task_one_output.txt')
+def test_d(snapshot):
+    snapshot.assert_match(repr(workflow.d()), 'd_output.txt')
+def test_task_one(snapshot):
+    snapshot.assert_match(repr(workflow.task_one()), 'task_one_output.txt')
+def test_task_two(snapshot):
+    snapshot.assert_match(repr(workflow.task_two()), 'task_two_output.txt')
+def test_task_three(snapshot):
+    snapshot.assert_match(repr(workflow.task_three()), 'task_three_output.txt')
+def test_task_four(snapshot):
+    snapshot.assert_match(repr(workflow.task_four()), 'task_four_output.txt')
+def test_wat(snapshot):
+    snapshot.assert_match(repr(workflow.wat()), 'wat_output.txt')
+def test_task_one(snapshot):
+    snapshot.assert_match(repr(workflow.task_one()), 'task_one_output.txt')
+def test_task_two(snapshot):
+    snapshot.assert_match(repr(workflow.task_two()), 'task_two_output.txt')

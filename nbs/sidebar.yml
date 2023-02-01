@@ -1,0 +1,11 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_core.ipynb
+      - section: test_files
+        contents:
+          - test_files/yo.ipynb
+          - section: data_chimp
+            contents:
+              - test_files/data_chimp/default.ipynb
