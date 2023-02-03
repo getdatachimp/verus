@@ -65,17 +65,18 @@ def _task_to_script(task, automations, root):
 {imports_source}
 import {task['wf_name']}
 import pickle
+import json
 inputs = {{}}
 input_names = json.loads('{json.dumps(task['inputs'])}')
 for input in input_names:
-    with open(f'task_storage/{{input}}') as f:
+    with open(f'/task_storage/{{input}}', mode='rb') as f:
         inputs[input] = pickle.load(f)
 
 {assign_targets} = {task['wf_name']}.{task['name']}({task_args})
 output_names = json.loads('{json.dumps(task['outputs'])}')
 for output in output_names:
-    with open(f'task_storage/{{output}}') as f:
-        pickle.dump(output, f)
+    with open(f'/task_storage/{{output}}', mode='wb') as f:
+        pickle.dump(eval(output), f)
 {assign_targets}
 
 # %%
@@ -154,7 +155,10 @@ def _execute():
         image,
         tty=True,
         command="/bin/bash",
-        detach=True
+        detach=True,
+        volumes={
+            '/Users/mattdupree/Developer/datachimp/demo-quality-pipeline/task_storage': {'bind': '/task_storage', 'mode': 'rw'}
+        }
     )
     print("container started")
     # TODO: We'll need to copy more than just the module that has the workflow
