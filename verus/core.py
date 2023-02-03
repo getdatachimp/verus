@@ -54,19 +54,33 @@ def get_imports_source(path):
 def _input_value_to_arg_value(value):
     return f"'value'" if isinstance(value, str) else value
 
+# TODO: All this templating is horrible
 def _task_to_script(task, automations, root):
     task_source = _get_source(task, root)
     imports_source = get_imports_source(f"{root}/{task['code_nb_path']}")
+    assign_targets = ", ".join(task['outputs'])
+    task_args = '**inputs' if len(task['inputs']) > 0 else '' 
     return f"""\
 # %%
 {imports_source}
 import {task['wf_name']}
+import pickle
+inputs = {{}}
+input_names = json.loads('{json.dumps(task['inputs'])}')
+for input in input_names:
+    with open(f'task_storage/{{input}}') as f:
+        inputs[input] = pickle.load(f)
 
-{task['wf_name']}.{task['name']}({", ".join([f"{key}={_input_value_to_arg_value(value)}" for key, value in task['input'].items()])})
+{assign_targets} = {task['wf_name']}.{task['name']}({task_args})
+output_names = json.loads('{json.dumps(task['outputs'])}')
+for output in output_names:
+    with open(f'task_storage/{{output}}') as f:
+        pickle.dump(output, f)
+{assign_targets}
 
 # %%
 import json
-dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', '{json.dumps(automations)}', globals() | json.loads('{json.dumps(task['input'])}'))
+dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', '{json.dumps(automations)}', globals() | inputs)
 """
 
 # %% ../nbs/00_core.ipynb 11

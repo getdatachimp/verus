@@ -50,6 +50,8 @@ spec:
             - name: certs-client
               mountPath: /certs/client
               readOnly: true
+            - name: task-storage
+              mountPath: /task_storage
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: dind-daemon
@@ -73,6 +75,9 @@ spec:
         emptyDir: {}
       - name: certs-client
         emptyDir: {}
+      - name: task-storage
+        persistentVolumeClaim:
+          name: task-storage-claim
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
