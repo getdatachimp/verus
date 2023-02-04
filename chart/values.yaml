@@ -10,7 +10,7 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
-workflowRepo: https://github.com/getdatachimp/verus
+workflowRepo: https://github.com/getdatachimp/demo
 chimpToken: cl4xep33t000109jnpnc1b6kk
 
 imagePullSecrets: []
