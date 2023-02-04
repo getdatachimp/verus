@@ -81,7 +81,7 @@ for output in output_names:
 
 # %%
 import json
-dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', '{json.dumps(automations)}', globals() | inputs)
+dchimp.on_execute_cell('''{json.dumps({"code": task_source})}''', r'''{json.dumps(automations)}''', globals() | inputs)
 """
 
 # %% ../nbs/00_core.ipynb 11
@@ -151,13 +151,14 @@ def _execute():
     jupytext.write(jupytext.reads(script, fmt="py:percent"),
                    "data_chimp_notebook.ipynb")
     print("notebook created")
+    host_path = os.environ.get('TASK_STORAGE_PATH', '/task_storage')
     container = client.containers.run(
         image,
         tty=True,
         command="/bin/bash",
         detach=True,
         volumes={
-            '/Users/mattdupree/Developer/datachimp/demo-quality-pipeline/task_storage': {'bind': '/task_storage', 'mode': 'rw'}
+            host_path: {'bind': '/task_storage', 'mode': 'rw'}
         }
     )
     print("container started")
