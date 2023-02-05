@@ -69,13 +69,13 @@ import json
 inputs = {{}}
 input_names = json.loads('{json.dumps(task['inputs'])}')
 for input in input_names:
-    with open(f'/task_storage/{{input}}', mode='rb') as f:
+    with open(f'/home/jovyan/task_storage/{{input}}', mode='rb') as f:
         inputs[input] = pickle.load(f)
 
 {assign_targets} = {task['wf_name']}.{task['name']}({task_args})
 output_names = json.loads('{json.dumps(task['outputs'])}')
 for output in output_names:
-    with open(f'/task_storage/{{output}}', mode='wb') as f:
+    with open(f'/home/jovyan/task_storage/{{output}}', mode='wb') as f:
         pickle.dump(eval(output), f)
 {assign_targets}
 
@@ -158,9 +158,10 @@ def _execute():
         command="/bin/bash",
         detach=True,
         volumes={
-            host_path: {'bind': '/task_storage', 'mode': 'rw'}
+            host_path: {'bind': '/home/jovyan/task_storage', 'mode': 'rw'}
         }
     )
+    container.exec_run('chown jovyan:users /home/jovyan/task_storage')
     print("container started")
     # TODO: We'll need to copy more than just the module that has the workflow
     # because the workflow could reference functions defined in other files.

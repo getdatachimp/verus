@@ -68,6 +68,8 @@ spec:
               mountPath: /certs/ca
             - name: certs-client
               mountPath: /certs/client
+            - name: task-storage
+              mountPath: /task_storage
       volumes: 
       - name: docker-graph-storage 
         emptyDir: {}
