@@ -64,12 +64,12 @@ spec:
           volumeMounts: 
             - name: docker-graph-storage 
               mountPath: /var/lib/docker 
+            - name: task-storage
+              mountPath: /task_storage
             - name: certs-ca
               mountPath: /certs/ca
             - name: certs-client
               mountPath: /certs/client
-            - name: task-storage
-              mountPath: /task_storage
       volumes: 
       - name: docker-graph-storage 
         emptyDir: {}

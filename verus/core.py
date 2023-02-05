@@ -161,7 +161,10 @@ def _execute():
             host_path: {'bind': '/home/jovyan/task_storage', 'mode': 'rw'}
         }
     )
-    container.exec_run('chown jovyan:users /home/jovyan/task_storage')
+    _, output = container.exec_run('chown jovyan:users /home/jovyan/task_storage', stream=True)
+    print("!!chown!!")
+    for chunk in output:
+        print(chunk)
     print("container started")
     # TODO: We'll need to copy more than just the module that has the workflow
     # because the workflow could reference functions defined in other files.
