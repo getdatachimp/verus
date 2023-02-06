@@ -161,7 +161,7 @@ def _execute():
             host_path: {'bind': '/home/jovyan/task_storage', 'mode': 'rw'}
         }
     )
-    _, output = container.exec_run('chown jovyan:users /home/jovyan/task_storage', stream=True)
+    _, output = container.exec_run('chown jovyan:users /home/jovyan/task_storage', stream=True, user='root')
     print("!!chown!!")
     for chunk in output:
         print(chunk)
